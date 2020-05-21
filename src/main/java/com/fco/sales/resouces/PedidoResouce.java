@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class PedidoResouce {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody PedidoDTO objDto){
+	public ResponseEntity<Pedido> insert(@Valid @RequestBody PedidoDTO objDto){
 		
 		Pedido obj = service.fromDTO(objDto);
 		
@@ -48,10 +49,27 @@ public class PedidoResouce {
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
-				.buildAndExpand(objDto.getId())
-				.toUri(); 
+				.buildAndExpand(obj.getId())
+				.toUri();
 		
-		return ResponseEntity.created(uri).build();
+		/*
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.build()
+				.expand(objDto.getId())
+				.toUri();
+		
+		final HttpHeaders headers = new HttpHeaders();
+		
+		headers.setLocation(uri);
+		
+		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		*/
+		
+		return ResponseEntity.created(uri).body(obj);
+		
+			
+		//return ResponseEntity.created(uri).build();
 	}
 	
 	/*

@@ -32,6 +32,8 @@ public class Pedido implements Serializable{
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
 	
+	private boolean finalizado;
+	
 	@OneToMany(mappedBy = "id.pedido")
 	@JsonProperty("itens")
 	private Set<ItemPedido> itens = new HashSet<>();
@@ -74,6 +76,14 @@ public class Pedido implements Serializable{
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
+	}
+
+	public boolean isFinalizado() {
+		return finalizado;
+	}
+
+	public void setFinalizado(boolean finalizado) {
+		this.finalizado = finalizado;
 	}
 	
 }
