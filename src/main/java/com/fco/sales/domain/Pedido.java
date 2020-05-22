@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,7 +35,7 @@ public class Pedido implements Serializable{
 	
 	private boolean finalizado;
 	
-	@OneToMany(mappedBy = "id.pedido")
+	@OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL)
 	@JsonProperty("itens")
 	private Set<ItemPedido> itens = new HashSet<>();
 	
@@ -86,4 +87,14 @@ public class Pedido implements Serializable{
 		this.finalizado = finalizado;
 	}
 	
+	public void setUpItens() {
+		try {
+			for (ItemPedido ip : getItens()) {
+				ip.setPedido(this);
+				ip.setTotal( ip.getPrecoVenda().multiply(ip.getQuantidade()) );
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

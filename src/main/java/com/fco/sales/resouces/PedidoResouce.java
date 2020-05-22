@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,54 +51,34 @@ public class PedidoResouce {
 				.buildAndExpand(obj.getId())
 				.toUri();
 		
-		/*
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
-				.build()
-				.expand(objDto.getId())
-				.toUri();
-		
-		final HttpHeaders headers = new HttpHeaders();
-		
-		headers.setLocation(uri);
-		
-		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-		*/
-		
 		return ResponseEntity.created(uri).body(obj);
-		
-			
-		//return ResponseEntity.created(uri).build();
 	}
 	
-	/*
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody Pedido obj){
-		
-		//Pedido obj = service.fromDTO(objDto);
-		
-		obj = service.insert(obj);
-		
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(obj.getId())
-				.toUri(); 
-		
-		return ResponseEntity.created(uri).build();
-	}
-	*/
 	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Void> update (@Valid @RequestBody PedidoDTO objDto, @PathVariable Integer id){
+		
+		Pedido pedido = service.findWithoutValidation(id);
+		
+		if (pedido == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		
+		Pedido updatedObj = service.fromDTO(objDto);
+
+		updatedObj.setId(id);
+		
+		updatedObj = service.update(pedido,updatedObj);
+		
+		return ResponseEntity.noContent().build();
+	}
+
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<PedidoDTO>> findAll() {
+	public ResponseEntity<List<Pedido>> findAll() {
 		
 		List<Pedido> list = service.findAll();
 		
-		List<PedidoDTO> listDTO = list.stream().map(
-				obj -> new PedidoDTO(obj)).collect(Collectors.toList()
-		);	
-		
-		return ResponseEntity.ok().body(listDTO);
+		return ResponseEntity.ok().body(list);
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -114,6 +93,20 @@ public class PedidoResouce {
 		
 		return ResponseEntity.noContent().build();
 	}
+	
+	@RequestMapping(value = "finalizar/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Void> finalizar (@PathVariable Integer id){
+		
+		Pedido pedido = service.findWithoutValidation(id);
+		
+		if (pedido == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		
+		pedido = service.finalizar(pedido);
+		
+		return ResponseEntity.noContent().build();
+	}
+
 
 
 }

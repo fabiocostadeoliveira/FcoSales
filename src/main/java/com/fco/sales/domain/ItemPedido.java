@@ -84,5 +84,5 @@ public class ItemPedido implements Serializable{
 	public void setPrecoVenda(BigDecimal precoVenda) {
 		this.precoVenda = precoVenda;
 	}
-	
+		
 }

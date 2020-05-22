@@ -58,59 +58,41 @@ public class PedidoService {
 		
 		obj = repository.save(obj);
 		
-		for (ItemPedido ip : obj.getItens()) {
-			ip.setPedido(obj);
-			
-			ip.setTotal( ip.getPrecoVenda().multiply(ip.getQuantidade()) );
-		}
-
+		obj.setUpItens();
+		
 		itemPedidoRepository.saveAll(obj.getItens());
 		
 		return obj;
 	}
-
 	
-/*
 	@Transactional
-	public Pedido insert(Pedido obj) {
+	public Pedido update(Pedido existingObj, Pedido newObj) {
 		
-		obj.setId(null);
+		itemPedidoRepository.deleteAll(existingObj.getItens());
 		
-		obj.setData(new Date());
+		updateData(existingObj, newObj);
 		
-		Cliente cliente = clienteService.find(obj.getCliente().getId());
+		itemPedidoRepository.saveAll(newObj.getItens());		
 		
-		obj.setCliente(cliente);
+		existingObj = repository.save(existingObj);
 		
-		obj = repository.save(obj);
-		
-		for (ItemPedido ip : obj.getItens()) {
-			
-			Produto produto = produtoService.find(ip.getProduto().getId());
-			
-			ip.setProduto(produto);
-			
-			ip.setPrecoVenda(produto.getPreco());
-			
-			ip.setQuantidade(ip.getQuantidade());
-			
-			ip.setTotal( ip.getPrecoVenda().multiply(ip.getQuantidade()) );
-			
-			ip.setPedido(obj);
-			
-		}
-
-		itemPedidoRepository.saveAll(obj.getItens());
-		
-		return obj;
+		return existingObj;
 	}
-*/	
 	
 	public void delete(Integer id) {
 		
 		find(id);
 		
 		repository.deleteById(id);
+	}
+	
+	public Pedido finalizar(Pedido pedido) {
+		
+		pedido.setFinalizado(true);
+		
+		Pedido pedidoAtualizado = repository.save(pedido);
+		
+		return pedidoAtualizado;
 	}
 	
 	
@@ -149,5 +131,8 @@ public class PedidoService {
 		
 		return pedido;
 	}
-
+	
+	private void updateData(Pedido oldObj, Pedido newObj) {
+		oldObj.setCliente(newObj.getCliente());
+	}
 }
