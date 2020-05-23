@@ -1,8 +1,11 @@
 package com.fco.sales.services;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -65,14 +68,18 @@ public class PedidoService {
 		return obj;
 	}
 	
-	@Transactional
+	
 	public Pedido update(Pedido existingObj, Pedido newObj) {
 		
-		itemPedidoRepository.deleteAll(existingObj.getItens());
+		Set<ItemPedido> toDelete = new HashSet<>(existingObj.getItens());
+		
+		existingObj.getItens().removeAll(toDelete);
+		
+		itemPedidoRepository.deleteAll(toDelete);
+		
+		itemPedidoRepository.saveAll( new HashSet<ItemPedido>(newObj.getItens()));
 		
 		updateData(existingObj, newObj);
-		
-		itemPedidoRepository.saveAll(newObj.getItens());		
 		
 		existingObj = repository.save(existingObj);
 		
@@ -115,7 +122,7 @@ public class PedidoService {
 			
 			ItemPedido itemPedido = new ItemPedido();
 			
-			itemPedido.getId().setPedido(pedido);
+			itemPedido.setPedido(pedido);
 			
 			itemPedido.setProduto(produto);
 			

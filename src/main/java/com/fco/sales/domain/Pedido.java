@@ -91,6 +91,7 @@ public class Pedido implements Serializable{
 		try {
 			for (ItemPedido ip : getItens()) {
 				ip.setPedido(this);
+				ip.setProduto(ip.getProduto());
 				ip.setTotal( ip.getPrecoVenda().multiply(ip.getQuantidade()) );
 			}
 		} catch (Exception e) {
