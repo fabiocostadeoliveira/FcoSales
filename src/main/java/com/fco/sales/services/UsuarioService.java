@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fco.sales.domain.Usuario;
+import com.fco.sales.dtos.UsuarioDTO;
 import com.fco.sales.repositories.UsuarioRepository;
+import com.fco.sales.services.exceptions.IntegrityViolationException;
 import com.fco.sales.services.exceptions.ObjectNotFoundException;
+import com.fco.sales.services.exceptions.UserNotFoundException;
+import com.fco.sales.services.exceptions.UserOrPassworIncorretException;
 
 @Service
 public class UsuarioService {
@@ -23,24 +27,45 @@ public class UsuarioService {
 		return usuario.orElseThrow(() -> new ObjectNotFoundException("Usuario não encontrado - id: " + id));
 	}
 	
+	public Usuario findByLogin(String login) {
+		
+		Usuario usuario = repository.findByLoginIgnoreCase(login);
+		
+		return usuario;
+	}
+	
 	public boolean autenticate(Usuario obj) {
 		
-		Usuario usuario = find(obj.getId());
+		Usuario usuario = findByLogin(obj.getLogin());
 		
-		if (usuario.getSenha().equals(obj.getSenha()))
-			return true;
+		if (usuario == null)
+			throw new UserNotFoundException("Usuario nao encontrado!");
+		
+		if (!usuario.getSenha().equals(obj.getSenha()))
+			throw new UserOrPassworIncorretException("Usuario ou senha incorreto");
 				
-		return false;
+		return true;
 	}
 	
 	
 	public Usuario insert(Usuario obj) {
+		
+		Usuario usuario = findByLogin(obj.getLogin());
+		
+		if (usuario != null) {
+			throw new IntegrityViolationException("Ja existe usuario com esse login"); 
+		}
 		
 		obj.setId(null);
 		
 		obj = repository.save(obj);
 		
 		return obj;
+	}
+	
+	public Usuario fromDTO(UsuarioDTO objDto) {
+		Usuario usuario = new Usuario(objDto.getId(), objDto.getNome(), objDto.getTelefone(), objDto.getEmail(), objDto.getLogin(), objDto.getSenha());
+		return usuario;
 	}
 	
 	

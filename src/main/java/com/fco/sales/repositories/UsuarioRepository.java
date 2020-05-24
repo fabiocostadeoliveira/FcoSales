@@ -7,5 +7,7 @@ import com.fco.sales.domain.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
-
+	
+	
+	public Usuario findByLoginIgnoreCase(String login);
 }
