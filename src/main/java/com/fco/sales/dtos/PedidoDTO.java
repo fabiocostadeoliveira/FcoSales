@@ -9,8 +9,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fco.sales.domain.Pedido;
+import com.fco.sales.services.validations.PedidoSave;
 
-
+@PedidoSave
 public class PedidoDTO {
 	
 	private Integer id;
@@ -19,6 +20,8 @@ public class PedidoDTO {
 	
 	@NotNull( message = "Cliente deve ser informado.")
 	private Integer clienteId;
+	
+	private boolean finalizado;
 	
 	@Valid
 	@NotEmpty(message = "Pedido sem item, favor informar pelo menos um item.")
@@ -66,4 +69,11 @@ public class PedidoDTO {
 		this.itens = itens;
 	}
 
+	public boolean isFinalizado() {
+		return finalizado;
+	}
+
+	public void setFinalizado(boolean finalizado) {
+		this.finalizado = finalizado;
+	}
 }

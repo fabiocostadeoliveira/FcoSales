@@ -108,6 +108,13 @@ public class PedidoService {
 		return repository.findAll();
 	}
 	
+	public List<Pedido> findAllOrderByDataDesc() {
+		
+		return repository.findAllByOrderByDataDesc();
+	}
+	
+	 
+	
 	public Pedido fromDTO(PedidoDTO pedidoDTO) {
 		
 		Pedido pedido = new Pedido(pedidoDTO.getId(), pedidoDTO.getData());

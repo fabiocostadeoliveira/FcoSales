@@ -2,7 +2,6 @@ package com.fco.sales.resouces;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -38,6 +37,7 @@ public class PedidoResouce {
 		
 		return ResponseEntity.ok().body(pedido);
 	}
+	
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Pedido> insert(@Valid @RequestBody PedidoDTO objDto){
@@ -77,6 +77,14 @@ public class PedidoResouce {
 	public ResponseEntity<List<Pedido>> findAll() {
 		
 		List<Pedido> list = service.findAll();
+		
+		return ResponseEntity.ok().body(list);
+	}
+	
+	@RequestMapping(value = "/orderByDateDesc", method = RequestMethod.GET)
+	public ResponseEntity<List<Pedido>> findAllOrderByDataDesc() {
+		
+		List<Pedido> list = service.findAllOrderByDataDesc();
 		
 		return ResponseEntity.ok().body(list);
 	}
