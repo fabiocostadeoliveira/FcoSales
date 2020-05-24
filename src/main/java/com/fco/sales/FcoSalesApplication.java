@@ -1,6 +1,7 @@
 package com.fco.sales;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.fco.sales.domain.Cliente;
 import com.fco.sales.domain.Produto;
+import com.fco.sales.domain.Usuario;
+import com.fco.sales.repositories.UsuarioRepository;
 import com.fco.sales.services.ClienteService;
 import com.fco.sales.services.ProdutoService;
 
@@ -21,6 +24,9 @@ public class FcoSalesApplication implements CommandLineRunner{
 	
 	@Autowired
 	private ProdutoService produtoService;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(FcoSalesApplication.class, args);
@@ -60,6 +66,12 @@ public class FcoSalesApplication implements CommandLineRunner{
 		cliente2.setTelefone("4533425825");
 		cliente2.setEmail("postodelta@gmail.com");
 		clienteService.insert(cliente2);
+		
+		
+		Usuario usuario1 = new Usuario();
+		usuario1.setLogin("admin");
+		usuario1.setSenha(Base64.getEncoder().encodeToString("123".getBytes()));
+		usuarioRepository.save(usuario1);
 		
 		
 	}

@@ -35,6 +35,10 @@ public class Pedido implements Serializable{
 	
 	private boolean finalizado;
 	
+	@ManyToOne
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
+	
 	@OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL)
 	@JsonProperty("itens")
 	private Set<ItemPedido> itens = new HashSet<>();
@@ -87,6 +91,14 @@ public class Pedido implements Serializable{
 		this.finalizado = finalizado;
 	}
 	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
 	public void setUpItens() {
 		try {
 			for (ItemPedido ip : getItens()) {

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fco.sales.domain.Pedido;
+import com.fco.sales.domain.Usuario;
 import com.fco.sales.services.validations.PedidoSave;
 
 @PedidoSave
@@ -22,6 +23,9 @@ public class PedidoDTO {
 	private Integer clienteId;
 	
 	private boolean finalizado;
+	
+	@NotNull( message = "Usuario deve ser informado.")
+	private Usuario usuario;
 	
 	@Valid
 	@NotEmpty(message = "Pedido sem item, favor informar pelo menos um item.")
@@ -76,4 +80,14 @@ public class PedidoDTO {
 	public void setFinalizado(boolean finalizado) {
 		this.finalizado = finalizado;
 	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	
+	
 }
