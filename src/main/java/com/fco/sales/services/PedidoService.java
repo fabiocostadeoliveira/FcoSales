@@ -1,6 +1,5 @@
 package com.fco.sales.services;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.fco.sales.domain.Cliente;
 import com.fco.sales.domain.ItemPedido;
 import com.fco.sales.domain.Pedido;
 import com.fco.sales.domain.Produto;
+import com.fco.sales.domain.Usuario;
 import com.fco.sales.dtos.ItemPedidoDTO;
 import com.fco.sales.dtos.PedidoDTO;
 import com.fco.sales.repositories.ItemPedidoRepository;
@@ -36,6 +36,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	public Pedido findWithoutValidation(Integer id) {
 
@@ -121,7 +124,11 @@ public class PedidoService {
 		
 		Cliente cliente = clienteService.find(pedidoDTO.getClienteId());
 		
+		Usuario usuario = usuarioService.find(pedidoDTO.getUsuario().getId());
+		
 		pedido.setCliente(cliente);
+		
+		pedido.setUsuario(usuario);
 		
 		for (ItemPedidoDTO ip : pedidoDTO.getItens()) {
 			
