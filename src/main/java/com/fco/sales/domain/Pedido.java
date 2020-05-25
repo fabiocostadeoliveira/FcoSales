@@ -1,6 +1,7 @@
 package com.fco.sales.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,9 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fco.sales.beans.ResumoPedidoBean;
 
 @Entity
 public class Pedido implements Serializable{
@@ -42,6 +45,10 @@ public class Pedido implements Serializable{
 	@OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL)
 	@JsonProperty("itens")
 	private Set<ItemPedido> itens = new HashSet<>();
+	
+	@Transient
+	@JsonProperty
+	private ResumoPedidoBean resumo;
 	
 	public Pedido() {
 	
@@ -97,6 +104,36 @@ public class Pedido implements Serializable{
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public ResumoPedidoBean getResumo() {
+
+		Integer qtdProdutos = 0;
+		
+		BigDecimal qtdItens = new BigDecimal(0);
+		
+		BigDecimal totalPedido = new BigDecimal(0);
+		
+		for (ItemPedido itemPedido : this.getItens()) {
+			
+			qtdProdutos +=1;
+			
+			totalPedido = totalPedido.add(itemPedido.getTotal());
+			
+			qtdItens = qtdItens.add(itemPedido.getQuantidade());
+		}
+
+		ResumoPedidoBean obj = new ResumoPedidoBean();
+		
+		obj.setUsuario(this.getUsuario());
+		
+		obj.setQtdItens(qtdItens);
+		
+		obj.setQtdProdutos(qtdProdutos);
+		
+		obj.setTotalPedido(totalPedido);
+		
+		return obj;
 	}
 
 	public void setUpItens() {

@@ -34,7 +34,7 @@ public class UsuarioService {
 		return usuario;
 	}
 	
-	public boolean autenticate(Usuario obj) {
+	public Usuario autenticate(Usuario obj) {
 		
 		Usuario usuario = findByLogin(obj.getLogin());
 		
@@ -44,7 +44,7 @@ public class UsuarioService {
 		if (!usuario.getSenha().equals(obj.getSenha()))
 			throw new UserOrPassworIncorretException("Usuario ou senha incorreto");
 				
-		return true;
+		return usuario;
 	}
 	
 	

@@ -46,20 +46,20 @@ public class UsuarioResource {
 	
 	
 	@RequestMapping(value = "/autenticate", method = RequestMethod.GET)
-	public ResponseEntity<Void> autenticate(@RequestParam(value="login", defaultValue = "") String login,
+	public ResponseEntity<Usuario> autenticate(@RequestParam(value="login", defaultValue = "") String login,
 											@RequestParam(value="senha", defaultValue = "") String senha) {
 		
 		UsuarioDTO objDTO = new UsuarioDTO(null, null, null, null, login, senha);
 		
 		Usuario obj = service.fromDTO(objDTO);
 		
-		boolean autorized = service.autenticate(obj);
+		obj = service.autenticate(obj);
 		
-		if(!autorized) {
+		if(obj == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body(obj);
 	}
 
 }
