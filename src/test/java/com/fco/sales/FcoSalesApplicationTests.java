@@ -10,4 +10,8 @@ class FcoSalesApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void contextLoads2() {
+	}
+
 }
